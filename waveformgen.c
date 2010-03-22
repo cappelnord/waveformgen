@@ -30,12 +30,9 @@
 
 #include "waveformgen.h"
 
+// private
 char* lastErrorMessage = "No Error so far.";
-
-int main (int argc, char *argv[])
-{
-
-}
+void drawTimeline(gdImagePtr im, WFGO* options);
 
 bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options)
 {	
@@ -55,10 +52,21 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 		return false;
 	}
 	
-	long samplesPerLine = (((long) sfinfo.frames) * sfinfo.channels) / width;
+	long framesPerLine = (long) sfinfo.frames / width;
+	long samplesPerLine = framesPerLine * sfinfo.channels;
 	
-	// we need to assure, that we read a complete frames
-	samplesPerLine = samplesPerLine - (samplesPerLine % sfinfo.channels);
+	
+	// although one could think, that these values are flexible, the loops
+	// below only work in these configurations (1/all or all/1)
+	
+	int channelsPerDrawing = 1;
+	int drawnChannels = sfinfo.channels;
+	
+	if(options->mixChannels)
+	{
+		channelsPerDrawing = sfinfo.channels;
+		drawnChannels = 1;
+	}
 		
 	float * buffer = malloc(sizeof(float) * samplesPerLine);
 	
@@ -81,10 +89,19 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 		return false;
 	}
 	
-	if(options->drawTimeline) {
-		// leave space for the timeline
-		height -= 10;
-	}
+	// calculate how large one drawing should be
+	
+	int drawHeight = height;
+	
+	// leave space for the timeline
+	if(options->drawTimeline)
+		drawHeight -= 10;
+	
+	// subtract spacing
+	drawHeight = drawHeight - ((drawnChannels - 1) * options->channelSpacing);
+	
+	// divide by drawnChannels
+	drawHeight = drawHeight / drawnChannels;
 	
 	// background color
 	int bgColor = gdImageColorAllocate(im,WFG_THREE_INTS_FROM_ARRAY(options->bgColor));
@@ -95,14 +112,10 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	
 	int rmsColor =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->rmsColor));
 	int peakColor = gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->peakColor));
-		
+	
+	// too many nested loops ...
 	for(int i = 0; i < width; i++)
 	{
-		double val = 0.0;
-		
-		float peakP = 0.0;
-		float peakM = 0.0;
-		
 		if(sf_read_float(sfile, buffer, samplesPerLine) != samplesPerLine)
 		{
 			lastErrorMessage = "Could not read samples from audio file!";
@@ -112,34 +125,54 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 			return false;			
 		}
 		
-		for(long e = 0; e < samplesPerLine; e++)
+		int drawOffset = 0;
+
+		for(int d = 0; d < drawnChannels; d++)
 		{
-			val = val + (buffer[e] * buffer[e]);
+			double val = 0.0;
 			
-			if(peakM < buffer[e])
-				peakM = buffer[e];
+			float peakP = 0.0;
+			float peakM = 0.0;
 			
-			if(peakP > buffer[e])
-				peakP = buffer[e];
+			for(long e = 0; e < framesPerLine; e++)
+			{
+				for(int f = 0; f < channelsPerDrawing; f++)
+				{
+					float smpl = buffer[e * drawnChannels + d];
+					val = val + (smpl*smpl);
+					
+					if(peakM > smpl)
+						peakM = smpl;
+					
+					if(peakP < smpl)
+						peakP = smpl;
+				}
+			}
+			
+			val = val / (float) (framesPerLine * channelsPerDrawing);
+			val = sqrt(val);
+			
+			int peakPP = drawHeight/2 -  peakP * (drawHeight/2);
+			int peakMP = drawHeight/2 + (peakM * -1.0 * (drawHeight/2));
+						
+			// avoid rounding errors when peak is very small
+			if(peakP > 0.001 || peakM < -0.001) 
+				gdImageLine(im, i,peakPP + drawOffset,i,peakMP + drawOffset, peakColor);
+			
+			int rmsSize;
+			rmsSize = val * (double) (drawHeight/2);
+			gdImageLine(im, i,drawHeight/2 - rmsSize + drawOffset,i,drawHeight/2 + rmsSize + drawOffset, rmsColor);
+			
+			drawOffset += drawHeight + options->channelSpacing;
 		}
-		
-		val = val / (float) samplesPerLine;
-		val = sqrt(val);
-		
-		
-		int peakPP = height/2 -  peakP * (height/2);
-		int peakMP = height/2 + (peakM * -1.0 * (height/2));
-		
-		gdImageLine(im, i,peakPP,i,peakMP, peakColor);
-		
-		int rmsSize;
-		rmsSize = val * (double) (height/2);
-		gdImageLine(im, i,height/2 - rmsSize,i,height/2 + rmsSize, rmsColor);
-		
 	}
+
 	
 	sf_close(sfile);
 	free(buffer);
+	
+	if(options->drawTimeline)
+		drawTimeline(im, options);
 	
 	// write out file
 	FILE* file = fopen(pictureFileName,"wb");
@@ -157,21 +190,28 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	return true;
 }
 
+void drawTimeline(gdImagePtr im, WFGO* options)
+{
+	// TODO: implement
+}
+
 WFGO* wfg_defaultOptions()
 {
 	WFGO* options = malloc(sizeof(struct wfg_options));
 	memset(options,0,sizeof(struct wfg_options));
 	
 	options->width = 800;
-	options->height = 100;
+	options->height = 120;
 	options->transparentBg = false;
 		
 	WFG_FILL_INT_COLOR_ARRAY(options->bgColor, 255, 255, 255);
 	WFG_FILL_INT_COLOR_ARRAY(options->rmsColor, 20, 20, 20);
 	WFG_FILL_INT_COLOR_ARRAY(options->peakColor, 80, 80, 80);
 	
-	options->drawTimeline = true;
+	options->mixChannels = false;
+	options->channelSpacing = 5;
 	
+	options->drawTimeline = false;
 	WFG_FILL_INT_COLOR_ARRAY(options->tlColor, 20, 20, 20);
 	
 	return options;

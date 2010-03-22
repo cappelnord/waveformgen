@@ -24,14 +24,20 @@
 #ifndef WAVEFORMGEN_H
 #define WAVEFORMGEN_H
 
+#define WAVEFORMGEN_VERSION "0.1"
+
 struct wfg_options {
 	
 	int width;
 	int height;
 	bool transparentBg;
+	
 	int bgColor[3];
 	int rmsColor[3];
 	int peakColor[3];
+	
+	bool mixChannels;
+	int channelSpacing;
 	
 	bool drawTimeline;
 	int tlColor[3];
