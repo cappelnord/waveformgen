@@ -1,0 +1,5 @@
+This is just a simple tool to generate a waveform image in png format from an audio file. It displays peak amplitude as well as RMS amplitude, just as Audacity does. I use it in a web application but maybe you need it in other scenarios. You can either use it as a library or as a command line tool. Use this tool at own risk, it isn't very fancy.
+
+This tool is released under GPL. See COPYING. Copyright 2010 Patrick Borgeat.
+
+See BUILDING for compile instructions.

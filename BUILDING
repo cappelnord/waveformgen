@@ -1,0 +1,20 @@
+This comes with a basic makeile. Just type 
+
+>> make
+
+if you're under Linux.
+
+You need the following libraries:
+
+GD2 (http://www.libgd.org/)
+libpng (http://www.libpng.org/pub/png/libpng.html)
+libsndfile (http://www.mega-nerd.com/libsndfile/)
+
+If you're using Mac OS X you can install the libraries with MacPorts (http://www.macports.org/).
+
+>> sudo port install libsndfile
+>> sudo port install gd2
+
+Because the Header/Library files are on different locations you need to compile another target:
+
+>> make macports
