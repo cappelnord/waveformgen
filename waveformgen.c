@@ -29,10 +29,19 @@
 #include <gd.h>
 
 #include "waveformgen.h"
+#include "minifont.h"
+
+#define WFG_STRING_BUFFER_SIZE 7
+
+#define NULL_CHAR 48 // ascii char 0
 
 // private
 char* lastErrorMessage = "No Error so far.";
-void drawTimeline(gdImagePtr im, WFGO* options);
+void drawTimeline(gdImagePtr im, WFGO* options, int seconds);
+void drawNumber(gdImagePtr im, int number, int x, int y, int color);
+int drawNumberString(gdImagePtr im, char* buffer, int x, int y, int color, bool doDraw);
+void fillStringWithTime(char * string, int seconds);
+
 
 bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options)
 {	
@@ -54,6 +63,8 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	
 	long framesPerLine = (long) sfinfo.frames / width;
 	long samplesPerLine = framesPerLine * sfinfo.channels;
+	
+	int seconds = sfinfo.frames / sfinfo.samplerate;
 	
 	
 	// although one could think, that these values are flexible, the loops
@@ -172,7 +183,7 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	free(buffer);
 	
 	if(options->drawTimeline)
-		drawTimeline(im, options);
+		drawTimeline(im, options, seconds);
 	
 	// write out file
 	FILE* file = fopen(pictureFileName,"wb");
@@ -190,9 +201,33 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	return true;
 }
 
-void drawTimeline(gdImagePtr im, WFGO* options)
+void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 {
-	// TODO: implement
+	int color =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlColor));
+	int bgColor =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlBgColor));
+
+	
+	char cbuf[WFG_STRING_BUFFER_SIZE];	
+	
+	int y = options->height - 8;
+	int w = options->width;
+	
+	gdImageFilledRectangle(im, 0,y -1 ,w,options->height,bgColor);
+	
+	fillStringWithTime(cbuf, 0);
+	drawNumberString(im, cbuf, 1,y,color,true);
+	
+	fillStringWithTime(cbuf, seconds);
+	drawNumberString(im, cbuf, w - drawNumberString(im,cbuf,0,0,color,false),y, color, true);
+	
+	int num = 5;
+	
+	for(int i = 1; i < num; i++)
+	{
+		fillStringWithTime(cbuf, seconds * ((float) i / (float) num));
+		drawNumberString(im, cbuf, (w * ((float) i / (float) num)) - (drawNumberString(im,cbuf,0,0,color,false) / 2),y, color, true);
+	}
+
 }
 
 WFGO* wfg_defaultOptions()
@@ -213,6 +248,8 @@ WFGO* wfg_defaultOptions()
 	
 	options->drawTimeline = false;
 	WFG_FILL_INT_COLOR_ARRAY(options->tlColor, 20, 20, 20);
+	WFG_FILL_INT_COLOR_ARRAY(options->tlBgColor, 192, 192, 192);
+
 	
 	return options;
 }
@@ -220,4 +257,83 @@ WFGO* wfg_defaultOptions()
 char* wfg_lastErrorMessage()
 {
 	return lastErrorMessage;
+}
+
+/*
+ I think i did the whole font drawing for fun.
+*/
+
+void drawNumber(gdImagePtr im, int number, int x, int y, int color)
+{
+	int i = number*35;
+	
+	for(int cy = y; cy < (y + 7);cy++)
+	{
+		for(int cx = x; cx < (x + 5);cx++)
+		{
+			if(wfg_char_table[i] == 1)
+			{
+				gdImageSetPixel(im, cx, cy, color);
+			}
+			i++;
+		}
+	}	
+}
+
+int drawNumberString(gdImagePtr im, char* buffer, int x, int y, int color, bool doDraw)
+{
+	char c;
+	int offsetX = 0;
+	
+	int i = 0;
+	
+	while((c = buffer[i]) != 0)
+	{
+		int number = c - NULL_CHAR;
+		
+		if(c == ':')
+		{
+			number = 10;
+			offsetX -= 2;
+		}
+		
+		if(c == '1')
+		{
+			offsetX -= 1;
+		}
+		
+		if(number < 0 || number > 10)
+			number = 0;
+		
+		if(doDraw)
+			drawNumber(im, number, offsetX + x, y, color);
+		
+		switch(c)
+		{
+			case ':':
+				offsetX += 4;
+				break;
+			default:
+				offsetX += 6;
+				break;
+		}
+		
+		i++;
+	}
+	
+	return offsetX;
+}
+
+void fillStringWithTime(char * string, int seconds)
+{
+	memset(string, 0, sizeof(char) * WFG_STRING_BUFFER_SIZE);
+	
+	int minutes = seconds/60;
+	int rest = seconds%60;
+	int i = sprintf(string,"%d",minutes);
+	
+	string[i] = ':';
+	
+	string[i+1] = (rest / 10) + NULL_CHAR;
+	string[i+2] = (rest % 10) + NULL_CHAR;
 }

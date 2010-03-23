@@ -47,6 +47,8 @@ int main (int argc, char *argv[])
 	
 	WFGO* options = wfg_defaultOptions();
 	
+	options->drawTimeline = true;
+	
 	// 	http://www.cs.utah.edu/dept/old/texinfo/glibc-manual-0.02/library_22.html#SEC388
 	
 	int c;
@@ -108,6 +110,8 @@ break;\
 			__PCOLOR('r', rmsColor, "rms");
 			__PCOLOR('p', peakColor, "peak");
 			__PCOLOR('c', tlColor, "timeline");
+			__PCOLOR('g', tlBgColor, "timeline background");
+
 		}
 	}
 	
@@ -230,8 +234,9 @@ OPTIONS:\n\
    -p RRGGBB  specify peak color. Default: 505050\n\n\
    -s spc     space between channels. Default: 5\n\
    -m         mix channels\n\n\
-   -l         draw a timeline\n\
-   -c RRGGBB  timeline color.  Default: 141414\n\n\
+   -l         draw a timeline (experimental)\n\
+   -c RRGGBB  timeline color.  Default: 141414\n\
+   -g RRGGBB  timeline color background color.  Default: C0C0C0\n\n\
    -h         display help\n\
    -v         display version\n\n");
 }
