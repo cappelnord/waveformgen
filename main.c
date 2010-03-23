@@ -21,8 +21,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <stdbool.h>
+#include <getopt.h>
 
 #include "waveformgen.h"
 
