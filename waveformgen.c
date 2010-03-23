@@ -220,7 +220,7 @@ void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 	fillStringWithTime(cbuf, seconds);
 	drawNumberString(im, cbuf, w - drawNumberString(im,cbuf,0,0,color,false),y, color, true);
 	
-	int num = 5;
+	int num = (w / 150);
 	
 	for(int i = 1; i < num; i++)
 	{
