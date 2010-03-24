@@ -52,7 +52,7 @@ int main (int argc, char *argv[])
 	int c;
 	int spacing;
 	
-	while((c = getopt(argc, argv, "o:i:d:htmslb:r:p:c:v")) != -1)
+	while((c = getopt(argc, argv, "o:i:d:htms:a:lb:r:p:c:x:g:v")) != -1)
 	{
 		switch (c)
 		{
@@ -86,6 +86,12 @@ int main (int argc, char *argv[])
 				if(spacing > 0)
 					options->channelSpacing = spacing;
 				break;
+				
+			case 'a': // mark spacing
+				spacing = atoi(optarg);
+				if(spacing > 0)
+					options->markSpacing = spacing;
+				break;
 			
 			case 'd': // dimension
 				if(!parseDimension(optarg, options))
@@ -108,7 +114,9 @@ break;\
 			__PCOLOR('r', rmsColor, "rms");
 			__PCOLOR('p', peakColor, "peak");
 			__PCOLOR('c', tlColor, "timeline");
+			__PCOLOR('x', tlOddColor, "odd mark color");
 			__PCOLOR('g', tlBgColor, "timeline background");
+				
 
 		}
 	}
@@ -233,7 +241,9 @@ OPTIONS:\n\
    -s spc     space between channels. Default: 5\n\
    -m         mix channels\n\n\
    -l         draw a timeline (experimental)\n\
+   -a spc     space between marks. Default: 80\n\
    -c RRGGBB  timeline color.  Default: 141414\n\
+   -x RRGGBB  odd mark color.  Default: 505050\n\
    -g RRGGBB  timeline color background color.  Default: C0C0C0\n\n\
    -h         display help\n\
    -v         display version\n\n");

@@ -41,7 +41,9 @@ struct wfg_options {
 	
 	bool drawTimeline;
 	int tlColor[3];
+	int tlOddColor[3];
 	int tlBgColor[3];
+	int markSpacing;
 };
 
 typedef struct wfg_options WFGO;

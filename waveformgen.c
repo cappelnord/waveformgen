@@ -32,8 +32,7 @@
 #include "minifont.h"
 
 #define WFG_STRING_BUFFER_SIZE 7
-
-#define NULL_CHAR 48 // ascii char 0
+#define ZERO_CHAR 48 // ascii char 0
 
 // private
 char* lastErrorMessage = "No Error so far.";
@@ -42,6 +41,8 @@ void drawNumber(gdImagePtr im, int number, int x, int y, int color);
 int drawNumberString(gdImagePtr im, char* buffer, int x, int y, int color, bool doDraw);
 void fillStringWithTime(char * string, int seconds);
 
+
+int markSpacing[] = {1,2,5,10,15,30,1 * 60,2 * 60,5 * 60,10 * 60,15 * 60,30 * 60,60 * 60};
 
 bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options)
 {	
@@ -106,7 +107,7 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	
 	// leave space for the timeline
 	if(options->drawTimeline)
-		drawHeight -= 10;
+		drawHeight -= 13;
 	
 	// subtract spacing
 	drawHeight = drawHeight - ((drawnChannels - 1) * options->channelSpacing);
@@ -204,6 +205,7 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 {
 	int color =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlColor));
+	int oddColor = gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlOddColor));
 	int bgColor =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlBgColor));
 
 	
@@ -216,18 +218,56 @@ void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 	
 	fillStringWithTime(cbuf, 0);
 	drawNumberString(im, cbuf, 1,y,color,true);
+	gdImageLine(im, 0,y-4,0,y-2,color);
 	
 	fillStringWithTime(cbuf, seconds);
 	drawNumberString(im, cbuf, w - drawNumberString(im,cbuf,0,0,color,false),y, color, true);
+	gdImageLine(im, w-1,y-4,w-1,y-2,color);
+
+		
+	int num = (w / options->markSpacing);
+	int div = 1;
+	int parts = 0;
 	
-	int num = (w / 150);
 	
+	for(int i = 0; i < sizeof(markSpacing) / sizeof(int); i++)
+	{
+		div = markSpacing[i];
+		parts = seconds / div;
+		
+		if(parts <= num)
+		{
+			break;
+		}
+	}
+	
+	for(int i = 1; i < parts + 1; i++)
+	{
+		int markSec = div * i;
+		fillStringWithTime(cbuf, markSec);
+		int x = ((float) markSec / (float) seconds) * w;
+		int xf = x - drawNumberString(im,cbuf,0,0,color,false) / 2;
+		
+		int thisColor = color;
+		if(markSec % 60 != 0)
+			thisColor = oddColor;
+		
+		if(xf < w - (options->markSpacing/2) && xf < w - 30)
+		{
+			drawNumberString(im, cbuf, xf,y,thisColor,true);
+			gdImageLine(im, x,y-4,x,y-2,thisColor);
+		}
+		
+	}
+	
+	// this would draw equals spaced marks
+	/*
 	for(int i = 1; i < num; i++)
 	{
 		fillStringWithTime(cbuf, seconds * ((float) i / (float) num));
 		drawNumberString(im, cbuf, (w * ((float) i / (float) num)) - (drawNumberString(im,cbuf,0,0,color,false) / 2),y, color, true);
 	}
-
+	 */
 }
 
 WFGO* wfg_defaultOptions()
@@ -248,7 +288,9 @@ WFGO* wfg_defaultOptions()
 	
 	options->drawTimeline = false;
 	WFG_FILL_INT_COLOR_ARRAY(options->tlColor, 20, 20, 20);
+	WFG_FILL_INT_COLOR_ARRAY(options->tlOddColor, 80, 80, 80);
 	WFG_FILL_INT_COLOR_ARRAY(options->tlBgColor, 192, 192, 192);
+	options->markSpacing = 80;
 
 	
 	return options;
@@ -289,7 +331,7 @@ int drawNumberString(gdImagePtr im, char* buffer, int x, int y, int color, bool 
 	
 	while((c = buffer[i]) != 0)
 	{
-		int number = c - NULL_CHAR;
+		int number = c - ZERO_CHAR;
 		
 		if(c == ':')
 		{
@@ -334,6 +376,6 @@ void fillStringWithTime(char * string, int seconds)
 	
 	string[i] = ':';
 	
-	string[i+1] = (rest / 10) + NULL_CHAR;
-	string[i+2] = (rest % 10) + NULL_CHAR;
+	string[i+1] = (rest / 10) + ZERO_CHAR;
+	string[i+2] = (rest % 10) + ZERO_CHAR;
 }
