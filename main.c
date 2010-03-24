@@ -46,9 +46,7 @@ int main (int argc, char *argv[])
 	}
 	
 	WFGO* options = wfg_defaultOptions();
-	
-	options->drawTimeline = true;
-	
+		
 	// 	http://www.cs.utah.edu/dept/old/texinfo/glibc-manual-0.02/library_22.html#SEC388
 	
 	int c;
