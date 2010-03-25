@@ -116,14 +116,14 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	drawHeight = drawHeight / drawnChannels;
 	
 	// background color
-	int bgColor = gdImageColorAllocate(im,WFG_THREE_INTS_FROM_ARRAY(options->bgColor));
+	int bgColor = gdImageColorAllocate(im,WFG_UNPACK_RGB(options->bgColor));
 	
 	if(options->transparentBg) {
 		gdImageColorTransparent(im,bgColor);
 	}
 	
-	int rmsColor =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->rmsColor));
-	int peakColor = gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->peakColor));
+	int rmsColor =  gdImageColorAllocate(im, WFG_UNPACK_RGB(options->rmsColor));
+	int peakColor = gdImageColorAllocate(im, WFG_UNPACK_RGB(options->peakColor));
 	
 	// too many nested loops ...
 	for(int i = 0; i < width; i++)
@@ -204,9 +204,9 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 
 void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 {
-	int color =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlColor));
-	int oddColor = gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlOddColor));
-	int bgColor =  gdImageColorAllocate(im, WFG_THREE_INTS_FROM_ARRAY(options->tlBgColor));
+	int color =  gdImageColorAllocate(im, WFG_UNPACK_RGB(options->tlColor));
+	int oddColor = gdImageColorAllocate(im, WFG_UNPACK_RGB(options->tlOddColor));
+	int bgColor =  gdImageColorAllocate(im, WFG_UNPACK_RGB(options->tlBgColor));
 
 	
 	char cbuf[WFG_STRING_BUFFER_SIZE];	

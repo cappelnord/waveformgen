@@ -221,8 +221,6 @@ bool parseColor(char* string, int* color)
 	return true;
 }
 
-#define _UNPACK_RGB(_POINTER) _POINTER[0], _POINTER[1], _POINTER[2]
-
 void displayHelp()
 {
 	WFGO* def = wfg_defaultOptions();
@@ -251,8 +249,8 @@ OPTIONS:\n\
    -h         display help\n\
    -v         display version\n\n",
 		   def->width, def->height, 
-		   _UNPACK_RGB(def->bgColor), _UNPACK_RGB(def->rmsColor), _UNPACK_RGB(def->peakColor),
+		   WFG_UNPACK_RGB(def->bgColor), WFG_UNPACK_RGB(def->rmsColor), WFG_UNPACK_RGB(def->peakColor),
 		   def->channelSpacing, def->markSpacing,
-		   _UNPACK_RGB(def->tlColor), _UNPACK_RGB(def->tlOddColor), _UNPACK_RGB(def->tlBgColor)
+		   WFG_UNPACK_RGB(def->tlColor), WFG_UNPACK_RGB(def->tlOddColor), WFG_UNPACK_RGB(def->tlBgColor)
 	);
 }
