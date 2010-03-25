@@ -283,7 +283,6 @@ WFGO* wfg_defaultOptions()
 	WFG_FILL_INT_COLOR_ARRAY(options->rmsColor, 80, 80, 80);
 	WFG_FILL_INT_COLOR_ARRAY(options->peakColor, 20, 20, 20);
 
-	
 	options->mixChannels = false;
 	options->channelSpacing = 3;
 	
@@ -293,7 +292,6 @@ WFGO* wfg_defaultOptions()
 	WFG_FILL_INT_COLOR_ARRAY(options->tlBgColor, 192, 192, 192);
 	options->markSpacing = 80;
 
-	
 	return options;
 }
 

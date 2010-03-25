@@ -117,7 +117,6 @@ break;\
 			__PCOLOR('x', tlOddColor, "odd mark color");
 			__PCOLOR('g', tlBgColor, "timeline background");
 				
-
 		}
 	}
 	
@@ -251,9 +250,9 @@ OPTIONS:\n\
    -g RRGGBB  timeline color background color. Default: %X%X%X\n\n\
    -h         display help\n\
    -v         display version\n\n",
-			  def->width, def->height, 
-			  _UNPACK_RGB(def->bgColor), _UNPACK_RGB(def->rmsColor), _UNPACK_RGB(def->peakColor),
-			  def->channelSpacing, def->markSpacing,
-		      _UNPACK_RGB(def->tlColor), _UNPACK_RGB(def->tlOddColor), _UNPACK_RGB(def->tlBgColor)
+		   def->width, def->height, 
+		   _UNPACK_RGB(def->bgColor), _UNPACK_RGB(def->rmsColor), _UNPACK_RGB(def->peakColor),
+		   def->channelSpacing, def->markSpacing,
+		   _UNPACK_RGB(def->tlColor), _UNPACK_RGB(def->tlOddColor), _UNPACK_RGB(def->tlBgColor)
 	);
 }
