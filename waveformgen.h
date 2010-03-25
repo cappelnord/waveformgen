@@ -52,7 +52,7 @@ WFGO* wfg_defaultOptions();
 bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options);
 char* wfg_lastErrorMessage();
 
-#define WFG_FILL_INT_COLOR_ARRAY(_POINTER,_R,_G,_B) _POINTER[0] = _R;_POINTER[1] = _G; _POINTER[2] = _B
+#define WFG_PACK_RGB(_POINTER,_R,_G,_B) _POINTER[0] = _R;_POINTER[1] = _G; _POINTER[2] = _B
 #define WFG_UNPACK_RGB(_POINTER) _POINTER[0], _POINTER[1], _POINTER[2]
 
 #endif

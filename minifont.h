@@ -19,6 +19,9 @@
  along with waveformgen. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef MINIFONT_H
+#define MINIFONT_H
+
 const char wfg_char_table[] = {
 0,1,1,1,0,
 1,0,0,0,1,
@@ -111,3 +114,5 @@ const char wfg_char_table[] = {
 0,0,1,0,0,
 0,0,0,0,0
 };
+
+#endif

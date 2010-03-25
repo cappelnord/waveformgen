@@ -279,17 +279,17 @@ WFGO* wfg_defaultOptions()
 	options->height = 120;
 	options->transparentBg = false;
 		
-	WFG_FILL_INT_COLOR_ARRAY(options->bgColor, 255, 255, 255);
-	WFG_FILL_INT_COLOR_ARRAY(options->rmsColor, 80, 80, 80);
-	WFG_FILL_INT_COLOR_ARRAY(options->peakColor, 20, 20, 20);
+	WFG_PACK_RGB(options->bgColor, 255, 255, 255);
+	WFG_PACK_RGB(options->rmsColor, 80, 80, 80);
+	WFG_PACK_RGB(options->peakColor, 20, 20, 20);
 
 	options->mixChannels = false;
 	options->channelSpacing = 3;
 	
 	options->drawTimeline = false;
-	WFG_FILL_INT_COLOR_ARRAY(options->tlColor, 20, 20, 20);
-	WFG_FILL_INT_COLOR_ARRAY(options->tlOddColor, 80, 80, 80);
-	WFG_FILL_INT_COLOR_ARRAY(options->tlBgColor, 192, 192, 192);
+	WFG_PACK_RGB(options->tlColor, 20, 20, 20);
+	WFG_PACK_RGB(options->tlOddColor, 80, 80, 80);
+	WFG_PACK_RGB(options->tlBgColor, 192, 192, 192);
 	options->markSpacing = 80;
 
 	return options;
