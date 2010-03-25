@@ -222,8 +222,12 @@ bool parseColor(char* string, int* color)
 	return true;
 }
 
+#define _UNPACK_RGB(_POINTER) _POINTER[0], _POINTER[1], _POINTER[2]
+
 void displayHelp()
 {
+	WFGO* def = wfg_defaultOptions();
+	
 	PRINT_VERSION;
 	
 	printf("usage: waveformgen [options] <infile> <outfile>\n\n\
@@ -233,18 +237,23 @@ void displayHelp()
 OPTIONS:\n\
    -o file    specify output file\n\
    -i file    specify input file\n\n\
-   -d dim     specify dimension as [width]x[height]. Default: 800x120\n\
+   -d dim     specify dimension as [width]x[height]. Default: %dx%d\n\
    -t         transparent background\n\
-   -b RRGGBB  specify background color. Default: FFFFFF\n\
-   -r RRGGBB  specify rms color. Default: 141414\n\
-   -p RRGGBB  specify peak color. Default: 505050\n\n\
-   -s spc     space between channels. Default: 5\n\
+   -b RRGGBB  specify background color. Default: %X%X%X\n\
+   -r RRGGBB  specify rms color. Default: %X%X%X\n\
+   -p RRGGBB  specify peak color. Default: %X%X%X\n\n\
+   -s spc     space between channels. Default: %d\n\
    -m         mix channels\n\n\
    -l         draw a timeline (experimental)\n\
-   -a spc     space between marks. Default: 80\n\
-   -c RRGGBB  timeline color.  Default: 141414\n\
-   -x RRGGBB  odd mark color.  Default: 505050\n\
-   -g RRGGBB  timeline color background color.  Default: C0C0C0\n\n\
+   -a spc     space between marks. Default: %d\n\
+   -c RRGGBB  timeline color. Default: %X%X%X\n\
+   -x RRGGBB  odd mark color. Default: %X%X%X\n\
+   -g RRGGBB  timeline color background color. Default: %X%X%X\n\n\
    -h         display help\n\
-   -v         display version\n\n");
+   -v         display version\n\n",
+			  def->width, def->height, 
+			  _UNPACK_RGB(def->bgColor), _UNPACK_RGB(def->rmsColor), _UNPACK_RGB(def->peakColor),
+			  def->channelSpacing, def->markSpacing,
+		      _UNPACK_RGB(def->tlColor), _UNPACK_RGB(def->tlOddColor), _UNPACK_RGB(def->tlBgColor)
+	);
 }

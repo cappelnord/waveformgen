@@ -42,7 +42,7 @@ int drawNumberString(gdImagePtr im, char* buffer, int x, int y, int color, bool 
 void fillStringWithTime(char * string, int seconds);
 
 
-int markSpacing[] = {1,2,5,10,15,30,1 * 60,2 * 60,5 * 60,10 * 60,15 * 60,30 * 60,60 * 60};
+int markSpacings[] = {1,2,5,10,15,30,1 * 60,2 * 60,5 * 60,10 * 60,15 * 60,30 * 60,60 * 60};
 
 bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options)
 {	
@@ -214,7 +214,7 @@ void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 	int y = options->height - 8;
 	int w = options->width;
 	
-	gdImageFilledRectangle(im, 0,y -1 ,w,options->height,bgColor);
+	gdImageFilledRectangle(im, 0,y -3 ,w,options->height,bgColor);
 	
 	fillStringWithTime(cbuf, 0);
 	drawNumberString(im, cbuf, 1,y,color,true);
@@ -230,9 +230,9 @@ void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 	int parts = 0;
 	
 	
-	for(int i = 0; i < sizeof(markSpacing) / sizeof(int); i++)
+	for(int i = 0; i < sizeof(markSpacings) / sizeof(int); i++)
 	{
-		div = markSpacing[i];
+		div = markSpacings[i];
 		parts = seconds / div;
 		
 		if(parts <= num)
@@ -252,7 +252,7 @@ void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 		if(markSec % 60 != 0)
 			thisColor = oddColor;
 		
-		if(xf < w - (options->markSpacing/2) && xf < w - 30)
+		if(x < w - (options->markSpacing/2) && x < w - 50)
 		{
 			drawNumberString(im, cbuf, xf,y,thisColor,true);
 			gdImageLine(im, x,y-4,x,y-2,thisColor);
@@ -280,11 +280,12 @@ WFGO* wfg_defaultOptions()
 	options->transparentBg = false;
 		
 	WFG_FILL_INT_COLOR_ARRAY(options->bgColor, 255, 255, 255);
-	WFG_FILL_INT_COLOR_ARRAY(options->rmsColor, 20, 20, 20);
-	WFG_FILL_INT_COLOR_ARRAY(options->peakColor, 80, 80, 80);
+	WFG_FILL_INT_COLOR_ARRAY(options->rmsColor, 80, 80, 80);
+	WFG_FILL_INT_COLOR_ARRAY(options->peakColor, 20, 20, 20);
+
 	
 	options->mixChannels = false;
-	options->channelSpacing = 5;
+	options->channelSpacing = 3;
 	
 	options->drawTimeline = false;
 	WFG_FILL_INT_COLOR_ARRAY(options->tlColor, 20, 20, 20);
