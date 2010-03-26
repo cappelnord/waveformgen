@@ -1,4 +1,4 @@
-This comes with a basic makeile. Just type 
+This comes with a basic makefile. Just type 
 
 >> make
 
@@ -18,3 +18,5 @@ If you're using Mac OS X you can install the libraries with MacPorts (http://www
 Because the Header/Library files are on different locations you need to compile another target:
 
 >> make macports
+
+ There is also a clean target but no install target.
