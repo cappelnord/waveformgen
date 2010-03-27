@@ -164,12 +164,14 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 			val = val / (float) (framesPerLine * channelsPerDrawing);
 			val = sqrt(val);
 			
-			int peakPP = drawHeight/2 -  peakP * (drawHeight/2);
-			int peakMP = drawHeight/2 + (peakM * -1.0 * (drawHeight/2));
-						
+			double ddrawHeight = drawHeight;
+			
+			int peakPP = drawHeight/2 -  round(peakP * (ddrawHeight/2.0));
+			int peakMP = drawHeight/2 +  round(peakM * -1.0 * (ddrawHeight/2.0));
+					
 			// avoid rounding errors when peak is very small
-			if(peakP > 0.001 || peakM < -0.001) 
-				gdImageLine(im, i,peakPP + drawOffset,i,peakMP + drawOffset, peakColor);
+			// if(peakP > 0.001 || peakM < -0.001) 
+			gdImageLine(im, i,peakPP + drawOffset,i,peakMP + drawOffset, peakColor);
 			
 			int rmsSize;
 			rmsSize = val * (double) (drawHeight/2);
