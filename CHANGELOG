@@ -1,0 +1,5 @@
+waveformgen v0.11:  2010-04-08
+* added "-e" option to draw a mark on every minute
+
+waveformgen v0.1:   2010-03-27
+* inital release
