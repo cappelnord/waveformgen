@@ -26,7 +26,7 @@
 
 #include "waveformgen.h"
 
-#define PRINT_VERSION printf("waveformgen %s - a waveform image generator\nWritten 2010 by Patrick Borgeat (http://www.cappel-nord.de)\n\n",WAVEFORMGEN_VERSION);
+#define PRINT_VERSION printf("waveformgen v%s - a waveform image generator\nWritten 2010 by Patrick Borgeat (http://www.cappel-nord.de)\n\n",WAVEFORMGEN_VERSION);
 
 
 // private
@@ -52,7 +52,7 @@ int main (int argc, char *argv[])
 	int c;
 	int spacing;
 	
-	while((c = getopt(argc, argv, "o:i:d:htms:a:lb:r:p:c:x:g:v")) != -1)
+	while((c = getopt(argc, argv, "o:i:d:htms:a:leb:r:p:c:x:g:v")) != -1)
 	{
 		switch (c)
 		{
@@ -79,6 +79,9 @@ int main (int argc, char *argv[])
 				break;
 			case 'l': // draw timeline
 				options->drawTimeline = true;
+				break;
+			case 'e': // draw mark for every minute
+				options->drawMarkEveryMinute = true;
 				break;
 			
 			case 's': // channel spacing
@@ -241,11 +244,12 @@ OPTIONS:\n\
    -p RRGGBB  specify peak color. Default: %X%X%X\n\n\
    -s spc     space between channels. Default: %d\n\
    -m         mix channels\n\n\
-   -l         draw a timeline (experimental)\n\
+   -l         draw a timeline\n\
    -a spc     space between marks. Default: %d\n\
    -c RRGGBB  timeline color. Default: %X%X%X\n\
    -x RRGGBB  odd mark color. Default: %X%X%X\n\
-   -g RRGGBB  timeline color background color. Default: %X%X%X\n\n\
+   -g RRGGBB  timeline color background color. Default: %X%X%X\n\
+   -e         draw a mark for every minute.\n\n\
    -h         display help\n\
    -v         display version\n\n",
 		   def->width, def->height, 
@@ -253,4 +257,6 @@ OPTIONS:\n\
 		   def->channelSpacing, def->markSpacing,
 		   WFG_UNPACK_RGB(def->tlColor), WFG_UNPACK_RGB(def->tlOddColor), WFG_UNPACK_RGB(def->tlBgColor)
 	);
+	
+	free(def);
 }

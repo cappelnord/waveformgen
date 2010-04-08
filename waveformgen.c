@@ -226,11 +226,20 @@ void drawTimeline(gdImagePtr im, WFGO* options, int seconds)
 	drawNumberString(im, cbuf, w - drawNumberString(im,cbuf,0,0,color,false),y, color, true);
 	gdImageLine(im, w-1,y-4,w-1,y-2,color);
 
+	
+	if(options->drawMarkEveryMinute)
+	{
+		for(int i = 0; i < seconds; i += 60)
+		{
+			int x = ((float) i / (float) seconds) * w;
+			gdImageLine(im, x, y-4, x, y-2, color);
+		}
+	}
 		
+	
 	int num = (w / options->markSpacing);
 	int div = 1;
 	int parts = 0;
-	
 	
 	for(int i = 0; i < sizeof(markSpacings) / sizeof(int); i++)
 	{
@@ -293,6 +302,8 @@ WFGO* wfg_defaultOptions()
 	WFG_PACK_RGB(options->tlOddColor, 80, 80, 80);
 	WFG_PACK_RGB(options->tlBgColor, 192, 192, 192);
 	options->markSpacing = 80;
+	
+	options->drawMarkEveryMinute = false;
 
 	return options;
 }

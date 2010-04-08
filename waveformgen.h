@@ -24,7 +24,7 @@
 #ifndef WAVEFORMGEN_H
 #define WAVEFORMGEN_H
 
-#define WAVEFORMGEN_VERSION "0.1"
+#define WAVEFORMGEN_VERSION "0.11"
 
 struct wfg_options {
 	
@@ -44,6 +44,8 @@ struct wfg_options {
 	int tlOddColor[3];
 	int tlBgColor[3];
 	int markSpacing;
+	
+	bool drawMarkEveryMinute;
 };
 
 typedef struct wfg_options WFGO;
