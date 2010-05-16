@@ -148,7 +148,7 @@ break;\
 	// a too small width would make the audio file buffer quite large.
 	if(options->width < 10)
 	{
-		fprintf(stderr, "Please specify a widht greater than 10!\n");
+		fprintf(stderr, "Please specify a width greater than 10!\n");
 		return EXIT_FAILURE;
 	}
 	
