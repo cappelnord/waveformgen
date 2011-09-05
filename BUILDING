@@ -19,4 +19,13 @@ Because the Header/Library files are on different locations you need to compile 
 
 >> make macports
 
+Or if you are using Homebrew (http://mxcl.github.com/homebrew/) on Mac OS X:
+
+>> sudo brew install libsndfile
+>> sudo brew install gd
+
+Headers and libraries are in default locations, but as we don't need to include libpng, this target:
+
+>> make homebrew
+
  There is also a clean target but no install target.
