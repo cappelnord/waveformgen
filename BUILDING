@@ -1,9 +1,3 @@
-This comes with a basic makefile. Just type 
-
->> make
-
-if you're under Linux.
-
 You need the following libraries:
 
 GD2 (http://www.libgd.org/)
@@ -15,17 +9,25 @@ If you're using Mac OS X you can install the libraries with MacPorts (http://www
 >> sudo port install libsndfile
 >> sudo port install gd2
 
-Because the Header/Library files are on different locations you need to compile another target:
-
->> make macports
-
-Or if you are using Homebrew (http://mxcl.github.com/homebrew/) on Mac OS X:
+You can also use Homebrew (http://mxcl.github.com/homebrew/) on Mac OS X:
 
 >> sudo brew install libsndfile
 >> sudo brew install gd
 
-Headers and libraries are in default locations, but as we don't need to include libpng, this target:
+You also need the Cmake build system installed.
+(http://www.cmake.org/)
 
->> make homebrew
 
- There is also a clean target but no install target.
+Building:
+- Create your build directory and change into it:
+>> mkdir build
+>> cd build
+
+- Run the Cmake script, it will (hopefully) find your libraries:
+>> cmake ..
+
+- Now you can compile waveformgen:
+>> make
+
+- And even install the binary:
+>> sudo make install
