@@ -1,9 +1,11 @@
-This is just a simple tool to generate a waveform image in png format from an audio file. 
-It displays peak amplitude as well as RMS amplitude, just as Audacity does. It is only meant 
-to draw an overview. Using it on a too small audio file will produce a quite bad result. I use 
-it in a web application but maybe you need it in other scenarios. You can either use it as 
-a command line tool or use wfg_generateImage() in your program. Use this tool at own risk. 
-It is not special, it is not fast, it is not fancy but it does the job (at least for me).
+This is just a simple tool to generate a waveform image in png format
+from an audio file. It displays peak amplitude as well as RMS amplitude,
+just as Audacity does. It is only meant to draw an overview. Using it on
+a too small audio file will produce a quite bad result. I use it in a
+web application but maybe you need it in other scenarios. You can either
+use it as a command line tool or use wfg_generateImage() in your
+program. Use this tool at own risk. It is not special, it is not fast,
+it is not fancy but it does the job (at least for me).
 
 Please run
 >> waveformgen -h
