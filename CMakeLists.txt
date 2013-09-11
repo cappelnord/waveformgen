@@ -5,6 +5,13 @@ set(CMAKE_C_FLAGS "-std=c99")
 
 find_library (SNDFILE sndfile)
 find_library (GD gd)
+
+if(NOT WIN32)
+find_library(MATH m)
+else()
+set(MATH "")
+endif()
+
 find_path (GD_INCLUDE_DIR gd.h)
 find_path (SNDFILE_INCLUDE_DIR sndfile.h)
 
@@ -32,7 +39,7 @@ if(NOT HAS_ERROR)
         ${SNDFILE_INCLUDE_DIR}
     )
 
-    target_link_libraries(waveformgen ${SNDFILE} ${GD})
+    target_link_libraries(waveformgen ${SNDFILE} ${GD} ${MATH})
 endif(NOT HAS_ERROR)
 
 install (TARGETS waveformgen RUNTIME DESTINATION bin)
