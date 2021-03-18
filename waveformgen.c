@@ -125,6 +125,12 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 	int rmsColor =  gdImageColorAllocate(im, WFG_UNPACK_RGB(options->rmsColor));
 	int peakColor = gdImageColorAllocate(im, WFG_UNPACK_RGB(options->peakColor));
 	
+	int maxRms = 0;
+	int rmsSizes[width];
+	int drawOffsets[width];
+
+	int centerPoint = drawHeight/2;
+	
 	// too many nested loops ...
 	for(int i = 0; i < width; i++)
 	{
@@ -164,23 +170,44 @@ bool wfg_generateImage(char* audioFileName, char* pictureFileName, WFGO* options
 			val = val / (float) (framesPerLine * channelsPerDrawing);
 			val = sqrt(val);
 			
-			double ddrawHeight = drawHeight;
-			
-			int peakPP = drawHeight/2 -  round(peakP * (ddrawHeight/2.0));
-			int peakMP = drawHeight/2 +  round(peakM * -1.0 * (ddrawHeight/2.0));
-					
-			// avoid rounding errors when peak is very small
-			// if(peakP > 0.001 || peakM < -0.001) 
-			gdImageLine(im, i,peakPP + drawOffset,i,peakMP + drawOffset, peakColor);
-			
-			int rmsSize;
-			rmsSize = val * (double) (drawHeight/2);
-			gdImageLine(im, i,drawHeight/2 - rmsSize + drawOffset,i,drawHeight/2 + rmsSize + drawOffset, rmsColor);
+			int rmsSize = val * (double) (centerPoint);
+
+			if (rmsSize > maxRms)
+				maxRms = rmsSize;
+
+			if(!options->scaleRms) 
+			{
+				double ddrawHeight = drawHeight;
+				int peakPP = centerPoint - round(peakP * (ddrawHeight/2.0));
+				int peakMP = centerPoint + round(peakM * -1.0 * (ddrawHeight/2.0));
+
+				// render immediately if not scaling
+				gdImageLine(im, i,peakPP + drawOffset,i,peakMP + drawOffset, peakColor);
+				gdImageLine(im, i, centerPoint + rmsSize + drawOffset, i, centerPoint - rmsSize + drawOffset, rmsColor);
+			}
+			else 
+			{
+				// record our values for later rendering when we are scaling
+				rmsSizes[i] = rmsSize;
+				drawOffsets[i] = drawOffset;
+			}
 			
 			drawOffset += drawHeight + options->channelSpacing;
 		}
 	}
 
+	if(options->scaleRms)
+	{
+		float scaleFactor = centerPoint / (float)maxRms;
+
+		for(int i = 0; i < width; i++)
+		{
+			int scaledRms = ceil(rmsSizes[i] * scaleFactor);
+			int y1 = centerPoint - scaledRms + drawOffsets[i];
+			int y2 = centerPoint + scaledRms + drawOffsets[i];
+			gdImageLine(im, i, y1, i, y2, rmsColor);
+		}
+	}
 	
 	sf_close(sfile);
 	free(buffer);
