@@ -52,7 +52,7 @@ int main (int argc, char *argv[])
 	int c;
 	int spacing;
 	
-	while((c = getopt(argc, argv, "o:i:d:htms:a:leb:r:p:c:x:g:v")) != -1)
+	while((c = getopt(argc, argv, "o:i:d:htmjs:a:leb:r:p:c:x:g:v")) != -1)
 	{
 		switch (c)
 		{
@@ -82,6 +82,10 @@ int main (int argc, char *argv[])
 				break;
 			case 'e': // draw mark for every minute
 				options->drawMarkEveryMinute = true;
+				break;
+
+			case 'j': // rms-only draw mode (scale rms to height)
+				options->scaleRms = true;
 				break;
 			
 			case 's': // channel spacing
@@ -239,6 +243,7 @@ OPTIONS:\n\
    -i file    specify input file\n\n\
    -d dim     specify dimension as [width]x[height]. Default: %dx%d\n\
    -t         transparent background\n\
+   -j rms-only draw mode. Do not draw peak. Scale rms to height.\n\
    -b RRGGBB  specify background color. Default: %X%X%X\n\
    -r RRGGBB  specify rms color. Default: %X%X%X\n\
    -p RRGGBB  specify peak color. Default: %X%X%X\n\n\

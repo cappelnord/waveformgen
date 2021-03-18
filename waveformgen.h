@@ -46,6 +46,8 @@ struct wfg_options {
 	int markSpacing;
 	
 	bool drawMarkEveryMinute;
+
+	bool scaleRms;
 };
 
 typedef struct wfg_options WFGO;
