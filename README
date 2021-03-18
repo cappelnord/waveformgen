@@ -13,6 +13,6 @@ for help.
 
 waveformgen was written in 2010 by Patrick Borgeat <patrick@borgeat.de>.
 
-This tool is released under GPL (See COPYING).
+This tool is released under MIT (see LICENSE)
 
 See BUILDING for compile instructions.
